@@ -1,0 +1,78 @@
+package com.amazon.regression;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import java.util.List;
+import org.openqa.selenium.Keys;
+
+public class AmazonBestSellerCart {
+
+	public static void main(String[] args) throws InterruptedException {
+		// TODO Auto-generated method stub
+
+		System.setProperty("webdriver.chrome.driver", "c:\\chromedriver.exe");
+		WebDriver driver = new ChromeDriver();
+		int bestsellersCount = 0;
+		String baseUrl = "https://www.amazon.com";
+		driver.get(baseUrl);
+		driver.manage().window().maximize();
+		driver.findElement(By.xpath("//input[@id='twotabsearchtextbox']")).sendKeys("Headphones");
+		driver.findElement(By.xpath("//input[@id='twotabsearchtextbox']")).sendKeys(Keys.RETURN);
+
+		List<WebElement> elements1 = driver
+				.findElements(By.xpath("//*[@id=\"search\"]/div[1]/div[2]/div/span[3]/div[1]/div"));
+		System.out.println("Number of elements:" + elements1.size());
+		for (int i = 1; i <= elements1.size(); i++) {
+			if (driver.findElements(By.xpath("//*[@id=\"search\"]/div[1]/div[2]/div/span[3]/div[1]/div[" + i
+					+ "]/div/div/div/div/div/div[1]/div//span[contains(text(),'Best Seller')]/../../../../../../../../../div[2]/div[2]/div/div/div/div/div/h2/a/span"))
+					.size() != 0) {
+				System.out.println("First Node - Best Seller Element is Present");
+				driver.findElement(By.xpath("//*[@id=\"search\"]/div[1]/div[2]/div/span[3]/div[1]/div[" + i
+						+ "]/div/div/div/div/div/div[1]/div//span[contains(text(),'Best Seller')]/../../../../../../../../../div[2]/div[2]/div/div/div/div/div/h2/a/span"))
+						.click();
+				driver.findElement(By.xpath("//input[@id='add-to-cart-button']")).click();
+				bestsellersCount = bestsellersCount + 1;
+				Thread.sleep(2000);
+				if (!driver.findElements(By.xpath("//*[@id=\"attachSiNoCoverage-announce\"]")).isEmpty()) {
+					driver.findElement(By.xpath("//*[@id=\"attachSiNoCoverage-announce\"]")).click();
+
+				} else if (!driver.findElements(By.xpath("//*[@id=\"siNoCoverage-announce\"]")).isEmpty()) {
+					driver.findElement(By.xpath("//*[@id=\"siNoCoverage-announce\"]")).click();
+					driver.navigate().back();
+				}
+				System.out.println("items index added to cart : " + i + " index");
+				Thread.sleep(7000);
+				driver.navigate().back();
+			}
+
+			else if (driver.findElements(By.xpath("//*[@id=\"search\"]/div[1]/div[2]/div/span[3]/div[1]/div[" + i
+					+ "]/div/div/div/div//span[contains(text(),'Best Seller')]/../../../../../../../../../div[2]/div[2]/div/div/div/div/div/h2/a/span"))
+					.size() != 0) {
+				System.out.println("Second node  Best Seller - Element is Present");
+				driver.findElement(By.xpath("//*[@id=\"search\"]/div[1]/div[2]/div/span[3]/div[1]/div[" + i
+						+ "]/div/div/div/div//span[contains(text(),'Best Seller')]/../../../../../../../../../div[2]/div[2]/div/div/div/div/div/h2/a/span"))
+						.click();
+				driver.findElement(By.xpath("//input[@id='add-to-cart-button']")).click();
+				bestsellersCount = bestsellersCount + 1;
+				Thread.sleep(2000);
+				if (!driver.findElements(By.xpath("//*[@id=\"attachSiNoCoverage-announce\"]")).isEmpty()) {
+					driver.findElement(By.xpath("//*[@id=\"attachSiNoCoverage-announce\"]")).click();
+					// driver.navigate().back();
+				} else if (!driver.findElements(By.xpath("//*[@id=\"siNoCoverage-announce\"]")).isEmpty()) {
+					driver.findElement(By.xpath("//*[@id=\"siNoCoverage-announce\"]")).click();
+					driver.navigate().back();
+				}
+
+				Thread.sleep(5000);
+				System.out.println("items index added to cart : " + i + " index");
+				driver.navigate().back();
+			}
+		}
+		WebElement Cart = driver.findElement(By.id("nav-cart-count"));
+		Cart.click();
+		System.out.println(" Number of Best Seller items added to cart : " + bestsellersCount);
+	}
+
+}
